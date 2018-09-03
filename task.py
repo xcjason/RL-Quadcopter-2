@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from physics_sim import PhysicsSim
 
 class Task():
@@ -29,7 +30,9 @@ class Task():
     def get_reward(self):
         """Uses current pose of sim to return reward."""
         reward = 1.-.3*(abs(self.sim.pose[:3] - self.target_pos)).sum()
-        return reward
+        # print(self.sim.pose[:3], sigmoid(reward))
+        # reward = 1. - .3 * ((self.sim.pose[0] - self.target_pos[0]) ** 2 + (self.sim.pose[1] - self.target_pos[1]) ** 2 + (self.sim.pose[2] - self.target_pos[2]) ** 2)
+        return sigmoid(reward)
 
     def step(self, rotor_speeds):
         """Uses action to obtain next state, reward, done."""
@@ -47,3 +50,7 @@ class Task():
         self.sim.reset()
         state = np.concatenate([self.sim.pose] * self.action_repeat) 
         return state
+
+
+def sigmoid(x):
+    return 1.0 / (1 + math.exp(-x))
